@@ -1,0 +1,81 @@
+https://www.linuxtechi.com/install-configure-jenkins-on-centos-7-rhel-7/
+
+
+How to install and Configure Jenkins on CentOS 7 and RHEL 7
+
+Jenkins is free and open source continues integration tool and it’s code is written in Java. It provides the feature of continues build and deployment or in other words we can say it is a automation server. Jenkins are used where continues build and integration is going on for software development.
+
+Step:1 Add Jenkins Repository
+
+Jenkins package is not available in the default CentOS and RHEL repositories. So we need to add jenkins repository.
+
+[root@jenkins ~]# wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat-stable/jenkins.repo
+[root@jenkins ~]# rpm --import http://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+Step:2 Install Jenkins and Java
+
+[root@jenkins ~]# yum install jenkins java-1.7.0-openjdk –y
+
+Step:3 Start and Enable Jenkins Service
+
+[root@jenkins ~]# systemctl start jenkins
+[root@jenkins ~]# systemctl enable jenkins
+
+Step:4 Open the ports (80 and 8080) in OS firewall.
+
+In case firewall is enabled on your Linux server then run the following commands to open jenkins related ports like 80 and 8080.
+
+[root@jenkins ~]# firewall-cmd --zone=public --add-port=8080/tcp --permanent
+success
+[root@jenkins ~]# firewall-cmd --zone=public --add-service=http --permanent
+success
+[root@jenkins ~]# firewall-cmd --reload
+success
+[root@jenkins ~]#
+
+Step:5 Access the Jenkins Web portal
+Access the URL : http://<Ip-Address-of-your-Server>:8080
+
+Admin password is created and stored in the log file  “/var/log/jenkins/jenkins.log“. Run the below command to get the password.
+[root@jenkins ~]# grep -A 5 password /var/log/jenkins/jenkins.log
+
+Copy the password and paste it in windows and click on Continue..
+
+In the next windows Select the option : Install suggested plugins
+
+Once required plugins installation is done It will ask to create Admin User.
+
+Click on Save and Finish
+
+click on “Start using Jenkins”
+
+Now Configure GitHub project using git plugin in Jenkins.
+
+Let’s first install git package on your machine on which you have installed Jenkins because Jenkins use git command to pull the GitHub project code.
+
+[root@jenkins ~]# yum install git
+
+Login to the GitHub and get the Web URL of your project.
+
+Login to the Jenkins portal, Click on “New Item”
+
+Select the Freestyle Project and Specify the name as per your setup
+
+Click on OK
+
+Specify the Project Description and Select Git option in Source Code Management Tab and specify the Web URL of your GitHub Project and its credentials. In the Build Tab select the option that suits your setup and then finally click on Apply.
+
+In the Next step click on the “Build Now” option from Jenkins Dashboard to pull the GitHub Project Code.
+
+Click on the Workspace Option to view Code or files of GitHub Project. Whenever a new code is pushed on the GitHub project it will be automatically push to Jenkins workspace with new versions.
+
+[root@jenkins ~]# cd /var/lib/jenkins/workspace/techi_project/
+[root@jenkins techi_project]# ls -l
+total 12
+-rw-r--r--. 1 jenkins jenkins 63 Aug  7 03:23 cloudstack
+-rw-r--r--. 1 jenkins jenkins 13 Aug  7 03:23 README.md
+-rw-r--r--. 1 jenkins jenkins 84 Aug  7 03:23 testing.md
+[root@jenkins techi_project]#
+
+
+https://www.edureka.co/blog/how-to-use-github/

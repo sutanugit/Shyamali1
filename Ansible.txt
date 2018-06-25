@@ -1,0 +1,89 @@
+Ansible is an open souce, powerful automation software for configuring, managing and deploying software application on the nodes without any downtime just by using SSH. Ansible just need a SSH connection and Python (2.4 or later) to be installed on the remote nodes to perform it's action. Ansiblecan handle 100's of nodes from a single system over SSH connection and the entire operation can be handled and executed by one single command ansible. But in some cases where you required to execute multiple commands for a deploymengt here we can build playbooks. Playbooks are bunch of commands which can perform multiple tasks and each playbooks are in YAML file format.
+
+How to Install and Configure ‘Ansible’ Automation Tool for IT Management
+
+Step 1: Installing Controlling Machine – Ansible
+
+nfortunately, there are no official Ansible repository for RedHat based clones, but we can install Ansible by enabling epel repository under RHEL/CentOS 6, 7
+
+RHEL/CentOS 7 64 Bit
+## RHEL/CentOS 7 64-Bit ##
+# wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+# rpm -ivh epel-release-latest-7.noarch.rpm
+
+RHEL/CentOS 6 32-64 Bit
+## RHEL/CentOS 6 32-Bit ##
+# wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+# rpm -ivh epel-release-6-8.noarch.rpm
+
+## RHEL/CentOS 6 64-Bit ##
+# wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+# rpm -ivh epel-release-6-8.noarch.rpm
+
+After configuring epel repository, we can install Ansible using  command.
+
+$ sudo yum install ansible -y
+After installed successfully, we can verify the version by executing command.
+
+# ansible --version
+ansible 1.8.2
+
+Step 2: Preparing SSH Keys to Remote Hosts
+
+ To perform any deployment or management from the localhost to remote host first we need to create and copy the ssh keys to the remote host. In every remote host there will be a user account
+
+# ssh-keygen -t rsa -b 4096 -C "admin@tecmintlocal.com"
+
+After creating SSH Key successfully, now copy the created key to all three remote server’s.
+
+# ssh-copy-id sutanu@192.168.0.112
+# ssh-copy-id sutanu@192.168.0.113
+# ssh-copy-id sutanu@192.168.0.114
+
+After copying all SSH Keys to remote host, now perform a ssh key authentication on all remote hosts to check whether authentication working or not.
+
+$ ssh sutanu@192.168.0.112
+$ ssh sutanu@192.168.0.113
+$ ssh sutanu@192.168.0.114
+
+How to Use Ansible Playbooks to Automate Complex Tasks on Multiple Remote Servers
+
+Ansible Testing Environment
+
+Controller machine (where Ansible is installed): 192.168.0.19
+Node1: 192.168.0.29
+Node2: 192.168.0.30
+
+In addition, please note that both nodes have been added in the webservers section of the local /etc/ansible/hosts file:
+
+[webservers]
+192.168.0.29
+192.168.0.30
+
+Introducing Ansible Playbooks
+
+# ansible -a "/bin/hostnamectl --static" webservers
+
+
+---
+- hosts: webservers
+remote_user: root
+vars:
+variable1: value1
+variable2: value2
+remote_user: root
+tasks:
+- name: description for task1
+task1: parameter1=value_for_parameter1 parameter2=value_for_parameter2
+- name: description for task1
+task2: parameter1=value_for_parameter1 parameter2=value_for_parameter2
+handlers:
+- name: description for handler 1
+service: name=name_of_service state=service_status
+- hosts: dbservers
+remote_user: root
+vars:
+variable1: value1
+variable2: value2
+…
+
